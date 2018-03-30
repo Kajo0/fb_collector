@@ -2,30 +2,60 @@
 <html>
 <head>
     <title>Friend collector</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
     <script src="scripts/extension.js"></script>
     <script src="scripts/jquery-3.3.1.min.js"></script>
 
     <style>
         body {
             width: 300px;
-        }
-
-        #collectButton {
-            width: 100%;
-            margin-bottom: 0.5em;
+            background: #cde;
         }
 
         #result {
-            width: 98%;
             height: 10em;
-            clear: both;
+        }
+
+        button, textarea {
+            width: 100%;
+            margin: 0.1em;
         }
     </style>
 </head>
 <body>
 
-<button id="collectButton">Collect</button>
-<textarea id="result" placeholder="collected.."></textarea>
+<div class="container mt-3 mb-2">
+    <div class="row mb-2">
+        <div class="col-md-6">
+            <button id="collect">Collect</button>
+        </div>
+        <div class="col-md-6">
+            <button id="diff">Diff old</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <textarea id="input" placeholder="last friends"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <textarea id="result" placeholder="collected.."></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <span id="oldCount"></span>
+        </div>
+        <div class="col-md-12">
+            <span id="count"></span>
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>

@@ -1,25 +1,71 @@
-document.addEventListener('DOMContentLoaded', function() {
-  var button = document.getElementById('collectButton');
+document.addEventListener('DOMContentLoaded', function () {
+  var collect = document.getElementById('collect');
+  var diff = document.getElementById('diff');
 
-  button.addEventListener('click', function () {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-      chrome.tabs.sendMessage(tabs[0].id, {data: ''}, function(response) {
+  collect.addEventListener('click', function () {
+    sendCollect(function (response) {
+      clearResult();
+      if (response.success) {
+        $('#count').text('Number of friends: ' + response.data.length);
+        response.data.forEach(function (name) {
+          appendResult(name);
+        });
+      } else {
+        appendResult('Sth gone wrong :/');
+      }
+    });
+  });
 
-        $('#result').text('');
-        if (response.success) {
-          append('Number of friends: ' + response.data.length);
-          response.data.forEach(function(name) {
-            append(name);
-          });
-        } else {
-          append('Sth gone wrong :/');
-        }
+  diff.addEventListener('click', function () {
+    sendCollect(function (response) {
+      var input = $('#input').val();
+
+      var previous = input.split('\n');
+      for (var i in previous) {
+        previous[i] = previous[i].replace(/\s+/g, ' ').trim();
+      }
+      previous = previous.filter(function (val) {
+        return val.trim() !== '';
       });
+
+      clearResult();
+      if (response.success) {
+        var names = response.data;
+        for (var i in names) {
+          names[i] = names[i].replace(/\s+/g, ' ');
+        }
+
+        $('#oldCount').text('Previous number of friends: ' + previous.length);
+        $('#count').text('New number of friends: ' + names.length);
+        previous.forEach(function (old) {
+          if (!names.includes(old)) {
+            appendResult(old);
+          }
+        })
+      } else {
+        appendResult('Sth gone wrong :/');
+      }
     });
   });
 });
 
-function append(line) {
+
+function sendCollect(callback) {
+  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+    chrome.tabs.sendMessage(tabs[0].id, {data: ''}, callback);
+  });
+}
+
+function clearResult() {
+  $('#result').text('');
+  $('#oldCount').text('');
+  $('#count').text('');
+}
+function appendResult(line) {
   var $out = $('#result');
-  $out.text($out.text() + '\n' + line);
+  if ($out.val().length === 0) {
+    $out.text(line);
+  } else {
+    $out.text($out.val() + '\n' + line);
+  }
 }
